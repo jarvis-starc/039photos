@@ -1,1 +1,190 @@
-harsha
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>HARSHASIR AI</title>
+
+<script src="https://unpkg.com/@supabase/supabase-js"></script>
+
+<style>
+:root{ --primary:#00f2ff; }
+
+body{
+  margin:0;
+  font-family:Segoe UI,system-ui;
+  background:radial-gradient(circle at center,#0f172a,#020617);
+  color:white;
+  overflow:hidden;
+}
+
+/* Fast Boot */
+#boot{
+  position:fixed; inset:0;
+  background:#000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:999;
+  transition:opacity .4s ease;
+}
+
+.loader{
+  margin-top:15px;
+  width:150px; height:3px;
+  background:#111;
+  border-radius:3px;
+  overflow:hidden;
+}
+
+.loader-fill{
+  height:100%; width:0%;
+  background:var(--primary);
+  animation:load 1s linear forwards;
+}
+
+@keyframes load{ to{width:100%;} }
+
+/* Main */
+.main{
+  display:none;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+}
+
+/* Lighter Arc */
+.arc{
+  position:absolute;
+  width:300px; height:300px;
+  border-radius:50%;
+  border:2px solid rgba(0,242,255,0.3);
+  animation:rotate 10s linear infinite;
+}
+
+@keyframes rotate{
+  from{transform:rotate(0deg);}
+  to{transform:rotate(360deg);}
+}
+
+.login{
+  position:relative;
+  background:rgba(17,24,39,0.8);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(0,242,255,0.3);
+  box-shadow:0 0 20px rgba(0,242,255,0.3);
+  padding:35px;
+  width:320px;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  z-index:2;
+}
+
+h2{
+  text-align:center;
+  color:var(--primary);
+  margin:0;
+}
+
+input{
+  padding:10px;
+  border-radius:6px;
+  border:1px solid rgba(0,242,255,0.4);
+  background:transparent;
+  color:white;
+  outline:none;
+}
+
+button{
+  padding:10px;
+  border:none;
+  border-radius:6px;
+  background:var(--primary);
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* Dashboard */
+#dashboard{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#020617;
+  justify-content:center;
+  align-items:center;
+  font-size:22px;
+  color:var(--primary);
+}
+</style>
+</head>
+
+<body>
+
+<div id="boot">
+  <div>HARSHASIR AI INITIALIZING...</div>
+  <div class="loader"><div class="loader-fill"></div></div>
+</div>
+
+<div class="main" id="mainUI">
+  <div class="arc"></div>
+
+  <div class="login">
+    <h2>HARSHASIR ACCESS</h2>
+
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">LOGIN</button>
+  </div>
+</div>
+
+<div id="dashboard">
+  WELCOME HARSHASIR
+</div>
+
+<script>
+const SUPABASE_URL="YOUR_SUPABASE_URL";
+const SUPABASE_KEY="YOUR_PUBLIC_KEY";
+const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+/* Faster boot */
+setTimeout(()=>{
+  document.getElementById("boot").style.opacity="0";
+  setTimeout(()=>{
+    document.getElementById("boot").style.display="none";
+    document.getElementById("mainUI").style.display="flex";
+  },400);
+},1000);
+
+async function login(){
+  const email=document.getElementById("email").value;
+  const password=document.getElementById("password").value;
+
+  if(!email || !password){
+    alert("Access Denied");
+    return;
+  }
+
+  const {error}=await supabase.auth.signInWithPassword({
+    email:email,
+    password:password
+  });
+
+  if(error){
+    alert("Authentication Failed");
+    return;
+  }
+
+  document.getElementById("mainUI").style.display="none";
+  document.getElementById("dashboard").style.display="flex";
+}
+</script>
+
+</body>
+  </html>
