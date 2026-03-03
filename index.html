@@ -33,13 +33,12 @@
         .stat-box span { font-size: 22px; font-weight: bold; color: #fff; }
 
         .month-header { font-size: 20px; color: #fff; margin: 30px 0 15px; padding-left: 10px; border-left: 4px solid var(--neon); }
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         @media (max-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 480px) { .grid { grid-template-columns: repeat(2, 1fr); } }
 
-        .card { position: relative; aspect-ratio: 1/1; background: #000; overflow: hidden; cursor: pointer; border-radius: 2px; }
+        .card { position: relative; aspect-ratio: 1/1; background: #000; overflow: hidden; cursor: pointer; border-radius: 5px; border: 1px solid var(--accent); }
         .card img, .card video { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
-        .card:hover img { transform: scale(1.1); filter: brightness(0.7); }
         .card-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 8px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); opacity: 0; transition: 0.3s; }
         .card:hover .card-overlay { opacity: 1; }
         .card-title { font-size: 11px; color: #fff; font-weight: bold; }
@@ -53,9 +52,8 @@
         .chat-float { position:fixed; bottom:20px; right:20px; background: var(--neon); color:#0b1220; padding:12px 22px; border-radius:30px; cursor:pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(0,242,255,0.3); z-index: 800; }
         .recycle-home-btn { width: 100%; padding: 15px; background: rgba(255, 62, 62, 0.05); border: 1px dashed var(--danger); color: var(--danger); border-radius: 12px; cursor: pointer; margin-bottom: 10px; font-size: 13px; }
         
-        /* Activity Log Table Styles */
-        #activityPopup table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
-        #activityPopup th, #activityPopup td { border: 1px solid #1e2a3d; padding: 8px; text-align: left; color: white; }
+        #activityPopup table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 11px; }
+        #activityPopup th, #activityPopup td { border: 1px solid #1e2a3d; padding: 6px; text-align: left; color: white; }
         #activityPopup th { background: rgba(0, 242, 255, 0.1); color: var(--neon); }
         
         .hidden { display: none !important; }
@@ -69,7 +67,7 @@
 
 <header>
     <div class="hamburger" onclick="toggleSidebar()">☰</div>
-    <div class="logo" onclick="location.reload()">039 PHOTOS HARSHAH</div>
+    <div class="logo">039 PHOTOS HARSHAH</div>
     <div class="nav-btns" style="display: flex;">
         <button onclick="toggleTheme()" style="background:none; border:none; font-size:20px; cursor:pointer;">🌓</button>
         <button onclick="toggleMusic()" style="background:none; border:none; font-size:20px; cursor:pointer;">🎵</button>
@@ -91,8 +89,8 @@
 
 <div class="overlay" id="rolePopup">
     <div class="box">
-        <h1 style="margin-bottom: 10px; font-size: 24px;">039 PHOTOS HARSHAH..</h1>
-        <p style="opacity: 0.6; font-size: 14px; margin-bottom: 25px;">AI Powered Visual System</p>
+        <h1>039 PHOTOS HARSHAH..</h1>
+        <p style="opacity: 0.6; font-size: 13px; margin: 10px 0 20px;">Secure Visual Cloud System</p>
         <button onclick="selectRole('admin')">Harshah (Owner)</button>
         <button onclick="selectRole('friend')" style="background:#1e2a3d; color:#fff; margin-top:10px;">HARSHAH Friend</button>
     </div>
@@ -103,12 +101,12 @@
         <h3 id="loginTitle" style="margin-bottom:20px;">Login</h3>
         <input type="text" id="loginUser" placeholder="Username">
         <input type="password" id="loginPass" placeholder="Password">
-        <button onclick="handleLogin()">Ok, Authorize</button>
+        <button id="authBtn" onclick="handleLogin()">Ok, Authorize</button>
     </div>
 </div>
 
 <div class="overlay hidden" id="activityPopup" onclick="this.classList.add('hidden')">
-    <div class="box" style="max-width: 800px; max-height: 80vh; overflow-y: auto;" onclick="event.stopPropagation()">
+    <div class="box" style="max-width: 600px; max-height: 80vh; overflow-y: auto;" onclick="event.stopPropagation()">
         <h2 style="color: var(--neon); margin-bottom: 15px;">Activity Logs</h2>
         <div id="activityContent"></div>
     </div>
@@ -116,7 +114,7 @@
 
 <main class="main" id="mainContent">
     <div class="stats-bar">
-        <div class="stat-box" onclick="filterGallery('all')"><h4>All Media</h4><span id="statTotal">0</span></div>
+        <div class="stat-box" onclick="filterGallery('all')"><h4>All</h4><span id="statTotal">0</span></div>
         <div class="stat-box" onclick="filterGallery('photo')"><h4>Photos</h4><span id="statPhotos">0</span></div>
         <div class="stat-box full" onclick="filterGallery('video')"><h4>Videos</h4><span id="statVideos">0</span></div>
     </div>
@@ -131,14 +129,14 @@
 
     <section id="sec-upload" class="hidden">
         <div class="box" style="max-width:100%; background:transparent; border:none; padding:0;">
-            <h2 style="margin-bottom:20px;">Upload to Cloud</h2>
-            <input type="text" id="mediaTitle" placeholder="Title of Media">
+            <h2 style="margin-bottom:20px;">Push to Cloud</h2>
+            <input type="text" id="mediaTitle" placeholder="Title">
             <select id="mediaType">
-                <option value="photo">Image File</option>
-                <option value="video">Video File</option>
+                <option value="photo">Image</option>
+                <option value="video">Video</option>
             </select>
-            <input type="file" id="fileInput" accept="image/*,video/*">
-            <button onclick="processUpload()">Start Processing</button>
+            <input type="file" id="fileInput">
+            <button id="upBtn" onclick="processUpload()">Start Upload</button>
         </div>
     </section>
 
@@ -148,66 +146,72 @@
     </section>
 
     <section id="sec-requests" class="hidden">
-        <h2>System Requests</h2>
+        <h2>Requests</h2>
         <div id="requestList" style="margin-top:20px;"></div>
     </section>
 </main>
 
-<div class="chat-float" onclick="toggleChat()">💬 Chat with HARSHAH..</div>
+<div class="chat-float" onclick="alert('Connecting to Harshah...')">💬 Support</div>
 
 <script>
-    /* SUPABASE CONFIG */
     const SB_URL = "https://ikdvltlpilnvrekyhuxq.supabase.co";
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrZHZsdGxwaWxudnJla3lodXhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MDA2MjYsImV4cCI6MjA4NzE3NjYyNn0.maS1tsMHyGXDUSC1oSZG-caK1zYMojOOV4so-a8UeMQ";
-    const supabase = supabase.createClient(SB_URL, SB_KEY);
+    
+    let supabase;
+    try {
+        supabase = window.supabase.createClient(SB_URL, SB_KEY);
+    } catch(e) { console.error("Supabase Error", e); }
 
     let currentUser = null;
     let isAdmin = false;
     let currentFilter = 'all';
     let sessionRecordId = null;
 
-    /* AUTH & INITIALIZATION */
     function selectRole(role) {
         isAdmin = (role === 'admin');
         document.getElementById('rolePopup').classList.add('hidden');
         document.getElementById('loginPopup').classList.remove('hidden');
-        document.getElementById('loginTitle').innerText = isAdmin ? "Owner Access" : "Guest Portal";
+        document.getElementById('loginTitle').innerText = isAdmin ? "Owner Login" : "Guest Portal";
     }
 
     async function handleLogin() {
         const u = document.getElementById('loginUser').value;
         const p = document.getElementById('loginPass').value;
-        if (!u) return alert("Enter Username");
+        if (!u) return alert("Enter Name");
+        if (isAdmin && (u !== "Harshah" || p !== "harsha@112")) return alert("Wrong Credentials");
 
-        if (isAdmin && (u !== "Harshah" || p !== "harsha@112")) return alert("Invalid Credentials");
-
+        document.getElementById('authBtn').innerText = "Authenticating...";
         currentUser = u;
+        
+        // Login Success (Immediate UI switch to prevent sticking)
         document.getElementById('loginPopup').classList.add('hidden');
         document.getElementById('mainContent').style.display = 'block';
         document.getElementById('sideUser').innerText = u + (isAdmin ? " (Owner)" : "");
 
-        // Create User entry & Session
-        await supabase.from('site_users').upsert({ username: u, password: p || 'guest' }, { onConflict: 'username' });
-        const { data } = await supabase.from('login_history').insert([{ username: u }]).select();
-        sessionRecordId = data[0].id;
-
-        fetchData();
+        try {
+            await supabase.from('site_users').upsert({ username: u, password: p || 'guest' }, { onConflict: 'username' });
+            const { data } = await supabase.from('login_history').insert([{ username: u }]).select();
+            if (data) sessionRecordId = data[0].id;
+            fetchData();
+        } catch(e) { 
+            console.log("DB connection slow, proceeding anyway.");
+            fetchData(); 
+        }
     }
 
-    /* DATA MANAGEMENT */
     async function fetchData() {
-        const { data: mediaData } = await supabase.from('media').select('*').order('created_at', { ascending: false });
-        const { data: binData } = await supabase.from('recycle_bin').select('*').order('deleted_at', { ascending: false });
+        const { data: media } = await supabase.from('media').select('*').order('created_at', {ascending: false});
+        const { data: bin } = await supabase.from('recycle_bin').select('*').order('deleted_at', {ascending: false});
         
-        renderGallery(mediaData || [], 'galleryContainer', false);
-        renderGallery(binData || [], 'recycleContainer', true);
-        updateStats(mediaData || []);
-
-        const { count } = await supabase.from('system_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+        renderGrid(media || [], 'galleryContainer', false);
+        renderGrid(bin || [], 'recycleContainer', true);
+        updateStats(media || []);
+        
+        const { count } = await supabase.from('system_requests').select('*', {count:'exact', head:true}).eq('status', 'pending');
         document.getElementById('reqBadge').innerText = count || 0;
     }
 
-    function renderGallery(items, containerId, isRecycle) {
+    function renderGrid(items, containerId, isRecycle) {
         const container = document.getElementById(containerId);
         container.innerHTML = "";
         let filtered = currentFilter === 'all' || isRecycle ? items : items.filter(m => m.type === currentFilter);
@@ -234,8 +238,8 @@
                             <span style="font-size:9px;">By ${item.owner}</span>
                             ${isAdmin ? `
                                 <button onclick="${isRecycle ? `restoreMedia(${JSON.stringify(item).replace(/"/g, '&quot;')}, event)` : `deleteMedia(${JSON.stringify(item).replace(/"/g, '&quot;')}, event)`}" 
-                                style="background:${isRecycle ? 'var(--neon)' : 'red'}; color:#000; border:none; font-size:9px; padding:2px; margin-top:5px; border-radius:4px;">
-                                ${isRecycle ? 'Restore' : 'Delete'}</button>` : ''}
+                                style="background:${isRecycle ? 'var(--neon)' : 'red'}; color:#000; border:none; font-size:9px; padding:4px; margin-top:5px; border-radius:4px; font-weight:bold;">
+                                ${isRecycle ? 'RESTORE' : 'DELETE'}</button>` : ''}
                         </div>
                     </div>`;
             });
@@ -246,10 +250,12 @@
     async function processUpload() {
         const file = document.getElementById('fileInput').files[0];
         const title = document.getElementById('mediaTitle').value;
-        if (!file || !title) return alert("Missing info");
+        if (!file || !title) return alert("Fill all fields");
+        document.getElementById('upBtn').innerText = "Processing...";
         const reader = new FileReader();
         reader.onload = async (e) => {
             await supabase.from('media').insert([{ title, type: document.getElementById('mediaType').value, src: e.target.result, owner: currentUser }]);
+            document.getElementById('upBtn').innerText = "Start Upload";
             showSection('gallery');
             fetchData();
         };
@@ -258,7 +264,7 @@
 
     async function deleteMedia(item, e) {
         e.stopPropagation();
-        if(!confirm("Delete?")) return;
+        if(!confirm("Move to Recycle Bin?")) return;
         await supabase.from('recycle_bin').insert([{ title: item.title, type: item.type, src: item.src, owner: item.owner }]);
         await supabase.from('media').delete().eq('id', item.id);
         fetchData();
@@ -277,47 +283,37 @@
         fetchData();
     }
 
-    /* ADMIN ACTIONS */
     async function openActivityLog() {
         const { data: users } = await supabase.from('site_users').select('*');
         const { data: logs } = await supabase.from('login_history').select('*').order('login_time', { ascending: false });
-        
-        let html = `<h4>Registered Users</h4><table><tr><th>S.No</th><th>User</th><th>Email</th><th>Password</th><th>Joined</th></tr>`;
-        users.forEach((u, i) => html += `<tr><td>${i+1}</td><td>${u.username}</td><td>${u.email||'-'}</td><td>${u.password}</td><td>${new Date(u.registered_at).toLocaleDateString()}</td></tr>`);
-        html += `</table><h4 style="margin-top:20px;">Login History</h4><table><tr><th>User</th><th>Login</th><th>Logout</th></tr>`;
-        logs.forEach(l => html += `<tr><td>${l.username}</td><td>${new Date(l.login_time).toLocaleString()}</td><td>${l.logout_time ? new Date(l.logout_time).toLocaleString() : 'Active'}</td></tr>`);
-        
+        let html = `<h4>Users</h4><table><tr><th>User</th><th>Pass</th><th>Joined</th></tr>`;
+        users.forEach(u => html += `<tr><td>${u.username}</td><td>${u.password}</td><td>${new Date(u.registered_at).toLocaleDateString()}</td></tr>`);
+        html += `</table><h4 style="margin-top:15px;">Sessions</h4><table><tr><th>User</th><th>Login</th><th>Logout</th></tr>`;
+        logs.slice(0, 10).forEach(l => html += `<tr><td>${l.username}</td><td>${new Date(l.login_time).toLocaleTimeString()}</td><td>${l.logout_time ? new Date(l.logout_time).toLocaleTimeString() : 'Active'}</td></tr>`);
         document.getElementById('activityContent').innerHTML = html + "</table>";
         document.getElementById('activityPopup').classList.remove('hidden');
     }
 
     async function fetchRequests() {
         const { data } = await supabase.from('system_requests').select('*').eq('status', 'pending');
-        const list = document.getElementById('requestList');
-        list.innerHTML = data.map(r => `
+        document.getElementById('requestList').innerHTML = data.map(r => `
             <div class="stat-box" style="text-align:left; margin-bottom:10px;">
-                <p><b>${r.username}</b> wants <b>${r.request_type}</b></p>
-                <button onclick="handleRequest(${r.id}, 'approved')" style="background:green; color:white; padding:5px; border:none; border-radius:4px; margin-right:5px;">Approve</button>
-                <button onclick="handleRequest(${r.id}, 'ignored')" style="background:gray; color:white; padding:5px; border:none; border-radius:4px;">Ignore</button>
-            </div>`).join('') || "No pending requests.";
+                <p><b>${r.username}</b>: ${r.request_type}</p>
+                <button onclick="handleRequest(${r.id}, 'approved')" style="background:green; color:white; padding:4px; border:none; border-radius:4px; margin-right:5px;">Approve</button>
+                <button onclick="handleRequest(${r.id}, 'ignored')" style="background:gray; color:white; padding:4px; border:none; border-radius:4px;">Ignore</button>
+            </div>`).join('') || "No requests.";
     }
 
     async function handleRequest(id, status) {
         await supabase.from('system_requests').update({ status }).eq('id', id);
-        fetchData();
-        fetchRequests();
+        fetchData(); fetchRequests();
     }
 
     async function requestAccess(type) {
         const msg = prompt("Reason:");
-        if (msg) {
-            await supabase.from('system_requests').insert([{ username: currentUser, request_type: type }]);
-            alert("Request Sent!");
-            fetchData();
-        }
+        if (msg) { await supabase.from('system_requests').insert([{ username: currentUser, request_type: type }]); alert("Sent!"); }
     }
 
-    /* HELPERS */
     function updateStats(items) {
         document.getElementById('statTotal').innerText = items.length;
         document.getElementById('statPhotos').innerText = items.filter(m => m.type === 'photo').length;
@@ -341,13 +337,9 @@
         location.reload();
     }
 
-    function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('active');
-        document.getElementById('sidebarBackdrop').classList.toggle('active');
-    }
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarBackdrop').classList.toggle('active'); }
     function toggleTheme() { document.body.classList.toggle('light-theme'); }
     function toggleMusic() { const m = document.getElementById('bgMusic'); m.paused ? m.play() : m.pause(); }
-    function toggleChat() { alert("Connecting to Harshah..."); }
     function filterGallery(type) { currentFilter = type; fetchData(); }
 </script>
 </body>
