@@ -1,0 +1,334 @@
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>039 Photos - Ultimate AI Gallery</title>  
+    <style>  
+        :root { --neon: #00f2ff; --dark: #0b1220; --card: #111827; --danger: #ff3e3e; --accent: rgba(0, 242, 255, 0.1); }  
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }  
+        body { background: var(--dark); color: var(--neon); min-height:100vh; transition:.3s; overflow-x: hidden; }  /* THEMES */  
+    .light-theme { background:#f5f5f5; color:#111; --card: #fff; --dark: #f5f5f5; --accent: rgba(0,0,0,0.05); }  
+
+    /* HEADER */  
+    header {  
+        display:flex; align-items:center; padding:12px 20px;  
+        background:rgba(14, 22, 37, 0.9); border-bottom:1px solid var(--accent);  
+        position: sticky; top: 0; z-index: 900; backdrop-filter: blur(10px);  
+    }  
+    .hamburger { font-size:22px; cursor:pointer; margin-right:15px; }  
+    .logo { font-size:18px; font-weight:bold; flex-grow: 1; letter-spacing: 1px; }  
+
+    /* SIDEBAR */  
+    .sidebar {  
+        position:fixed; left:-300px; top:0; width:280px; height:100%;  
+        background:#0d1626; padding:20px; transition:.3s; z-index:1001; overflow-y: auto;  
+    }  
+    .sidebar.active { left:0; }  
+    #sidebarBackdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: none; }  
+    #sidebarBackdrop.active { display: block; }  
+    .sidebar button { width:100%; margin: 5px 0; padding: 12px; text-align: left; background: transparent; color: inherit; border: 1px solid #1e2a3d; cursor: pointer; border-radius: 8px; font-size: 14px; }  
+    .badge { background: var(--danger); color: white; padding: 2px 7px; border-radius: 10px; font-size: 10px; float: right; }  
+
+    /* STATS DASHBOARD */  
+    .main { display:none; padding:15px; max-width: 1200px; margin: auto; animation: fadeIn 0.5s ease; }  
+    @keyframes fadeIn { from {opacity:0} to {opacity:1} }  
+      
+    .stats-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }  
+    .stat-box { background: rgba(14, 25, 44, 0.8); padding: 15px; border-radius: 12px; border: 1px solid var(--accent); text-align: center; cursor: pointer; transition: 0.2s; }  
+    .stat-box.full { grid-column: span 2; }  
+    .stat-box:hover { border-color: var(--neon); background: var(--accent); }  
+    .stat-box h4 { font-size: 10px; text-transform: uppercase; opacity: 0.7; margin-bottom: 5px; }  
+    .stat-box span { font-size: 22px; font-weight: bold; color: #fff; }  
+
+    /* MONTHLY GRID */  
+    .month-header { font-size: 20px; color: #fff; margin: 30px 0 15px; padding-left: 10px; border-left: 4px solid var(--neon); }  
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }  
+    @media (max-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }  
+    @media (max-width: 480px) { .grid { grid-template-columns: repeat(2, 1fr); } }  
+
+    .card { position: relative; aspect-ratio: 1/1; background: #000; overflow: hidden; cursor: pointer; border-radius: 2px; }  
+    .card img, .card video { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }  
+    .card:hover img { transform: scale(1.1); filter: brightness(0.7); }  
+      
+    .card-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 8px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); opacity: 0; transition: 0.3s; }  
+    .card:hover .card-overlay { opacity: 1; }  
+    .card-title { font-size: 11px; color: #fff; font-weight: bold; }  
+      
+    .like-tag { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.6); padding: 3px 8px; border-radius: 12px; font-size: 11px; color: #fff; z-index: 10; display: flex; align-items: center; gap: 4px; }  
+
+    /* MODALS & POPUPS */  
+    .overlay { position:fixed; inset:0; background: rgba(7, 12, 21, 0.95); display:flex; justify-content:center; align-items:center; z-index:2000; padding: 20px; }  
+    .box { background:#0e192c; padding:25px; border-radius:20px; width:100%; max-width: 380px; text-align: center; border: 1px solid var(--accent); }  
+    .box input, .box select { width:100%; padding:12px; margin-bottom:12px; background:#16243a; border:1px solid #2a3a52; color:#fff; border-radius:8px; }  
+    .box button { width:100%; padding:12px; background:var(--neon); color:#000; border:none; border-radius:25px; font-weight:bold; cursor:pointer; margin-top: 5px; }  
+
+    /* CHAT / SUPPORT */  
+    .chat-float { position:fixed; bottom:20px; right:20px; background: var(--neon); color:#0b1220; padding:12px 22px; border-radius:30px; cursor:pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(0,242,255,0.3); z-index: 800; }  
+      
+    .recycle-home-btn { width: 100%; padding: 15px; background: rgba(255, 62, 62, 0.05); border: 1px dashed var(--danger); color: var(--danger); border-radius: 12px; cursor: pointer; margin-bottom: 10px; font-size: 13px; }  
+      
+    .hidden { display: none !important; }  
+</style>
+
+</head>  
+<body>  <audio id="bgMusic" loop><source src="https://files.catbox.moe/6rg98h.mp3" type="audio/mpeg"></audio>
+
+<div id="sidebarBackdrop" onclick="toggleSidebar()"></div>  <header>  
+    <div class="hamburger" onclick="toggleSidebar()">☰</div>  
+    <div class="logo" onclick="location.reload()">039 PHOTOS</div>  
+    <div class="nav-btns" style="display: flex;">  
+        <button onclick="toggleTheme()" style="background:none; border:none; font-size:20px; cursor:pointer;">🌓</button>  
+        <button onclick="toggleMusic()" style="background:none; border:none; font-size:20px; cursor:pointer;">🎵</button>  
+    </div>  
+</header>  <div class="sidebar" id="sidebar">  
+    <div style="margin-bottom: 25px; padding: 10px; border-bottom: 1px solid #1e2a3d;">  
+        <span style="color: #00ff88;">●</span> <b id="sideUser">Guest</b>  
+    </div>  
+    <button onclick="showSection('gallery')">🖼 Home Gallery</button>  
+    <button onclick="showSection('upload')">📤 Upload Media</button>  
+    <button onclick="openRecycle()">🗑 Recycle Bin</button>  <h3 style="font-size: 11px; margin: 25px 0 10px; opacity: 0.5; letter-spacing: 1px;">ADMIN TOOLS</h3>  
+<button onclick="checkAdmin('requests')">📩 System Requests <span id="reqBadge" class="badge">0</span></button>  
+<button onclick="checkAdmin('activity')">📝 Activity Logs</button>  
+  
+<button onclick="logout()" style="color: var(--danger); border-color: rgba(255,62,62,0.2); margin-top: 40px;">Logout</button>
+
+</div>  <div class="overlay" id="rolePopup">  
+    <div class="box">  
+        <h1 style="margin-bottom: 10px; font-size: 24px;">039 PHOTOS</h1>  
+        <p style="opacity: 0.6; font-size: 14px; margin-bottom: 25px;">AI Powered Visual System</p>  
+        <button onclick="selectRole('admin')">Harshah (Owner)</button>  
+        <button onclick="selectRole('friend')" style="background:#1e2a3d; color:#fff; margin-top:10px;">Friend Access</button>  
+    </div>  
+</div>  <div class="overlay hidden" id="loginPopup">  
+    <div class="box">  
+        <h3 id="loginTitle" style="margin-bottom:20px;">Login</h3>  
+        <input type="text" id="loginUser" placeholder="Username">  
+        <input type="password" id="loginPass" placeholder="Password">  
+        <button onclick="handleLogin()">Authorize</button>  
+        <p onclick="alert('Contact Harshah for credentials')" style="font-size:12px; margin-top:15px; cursor:pointer; opacity:0.6;">Forgot password?</p>  
+    </div>  
+</div>  <main class="main" id="mainContent">  
+    <div class="stats-bar">  
+        <div class="stat-box" onclick="filterGallery('all')"><h4>Total Media</h4><span id="statTotal">0</span></div>  
+        <div class="stat-box" onclick="filterGallery('photo')"><h4>Photos</h4><span id="statPhotos">0</span></div>  
+        <div class="stat-box full" onclick="filterGallery('video')"><h4>Videos</h4><span id="statVideos">0</span></div>  
+    </div>  <button class="recycle-home-btn" onclick="requestAccess('Recycle Bin')">  
+    ⚠️ Request Restore or Access Deleted Media  
+</button>  
+
+<section id="sec-gallery">  
+    <div id="galleryContainer"></div>  
+</section>  
+
+<section id="sec-upload" class="hidden">  
+    <div class="box" style="max-width:100%; background:transparent; border:none; padding:0;">  
+        <h2 style="margin-bottom:20px;">Upload to Cloud</h2>  
+        <input type="text" id="mediaTitle" placeholder="Title of Media">  
+        <select id="mediaType">  
+            <option value="photo">Image File</option>  
+            <option value="video">Video File</option>  
+        </select>  
+        <input type="file" id="fileInput" accept="image/*,video/*">  
+        <button onclick="processUpload()">Start Processing</button>  
+    </div>  
+</section>  
+
+<section id="sec-requests" class="hidden">  
+    <h2>Requests</h2>  
+    <div id="requestList" style="margin-top:20px;"></div>  
+</section>
+
+</main>  <div class="chat-float" onclick="toggleChat()">  
+    💬 Support  
+</div>  <script>  
+    /* SYSTEM DATA */  
+    let media = JSON.parse(localStorage.getItem("m_v3")) || [  
+        {id: 1, title: "Initial Spark", type: "photo", src: "https://picsum.photos/600/600?random=11", owner: "Harshah", likes: 12, date: "2026-03-01"},  
+        {id: 2, title: "Core Architecture", type: "photo", src: "https://picsum.photos/600/600?random=12", owner: "Harshah", likes: 8, date: "2026-03-02"},  
+        {id: 3, title: "Spring Flow", type: "photo", src: "https://picsum.photos/600/600?random=13", owner: "Friend", likes: 5, date: "2026-02-20"}  
+    ];  
+    let recycleBin = JSON.parse(localStorage.getItem("r_v3")) || [];  
+    let requests = JSON.parse(localStorage.getItem("req_v3")) || [];  
+      
+    let currentUser = null;  
+    let isAdmin = false;  
+    let currentFilter = 'all';  
+  
+    /* INITIALIZATION */  
+    function selectRole(role) {  
+        isAdmin = (role === 'admin');  
+        document.getElementById('rolePopup').classList.add('hidden');  
+        document.getElementById('loginPopup').classList.remove('hidden');  
+        document.getElementById('loginTitle').innerText = isAdmin ? "Owner Access" : "Guest Portal";  
+    }  
+  
+    function handleLogin() {  
+        const u = document.getElementById('loginUser').value;  
+        const p = document.getElementById('loginPass').value;  
+          
+        if(isAdmin) {  
+            if(u === "Harshah" && p === "harsha@112") loginSuccess("Harshah");  
+            else alert("Invalid Owner Credentials");  
+        } else {  
+            if(u) loginSuccess(u);  
+            else alert("Please enter a guest name");  
+        }  
+    }  
+  
+    function loginSuccess(name) {  
+        currentUser = name;  
+        document.getElementById('loginPopup').classList.add('hidden');  
+        document.getElementById('mainContent').style.display = 'block';  
+        document.getElementById('sideUser').innerText = name + (isAdmin ? " (Owner)" : "");  
+        renderGallery();  
+        updateStats();  
+    }  
+  
+    /* GALLERY LOGIC - MONTHLY GRID */  
+    function renderGallery() {  
+        const container = document.getElementById('galleryContainer');  
+        container.innerHTML = "";  
+          
+        let filtered = currentFilter === 'all' ? media : media.filter(m => m.type === currentFilter);  
+          
+        // Sorting by date descending  
+        filtered.sort((a,b) => new Date(b.date) - new Date(a.date));  
+  
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];  
+        const grouped = filtered.reduce((acc, item) => {  
+            const d = new Date(item.date);  
+            const mKey = `${months[d.getMonth()]} ${d.getFullYear()}`;  
+            if (!acc[mKey]) acc[mKey] = [];  
+            acc[mKey].push(item);  
+            return acc;  
+        }, {});  
+  
+        for (const month in grouped) {  
+            const section = document.createElement('div');  
+            section.innerHTML = `<h3 class="month-header">${month}</h3>`;  
+              
+            const grid = document.createElement('div');  
+            grid.className = "grid";  
+              
+            grouped[month].forEach(item => {  
+                const card = document.createElement('div');  
+                card.className = "card";  
+                const mediaTag = item.type === 'video' ? `<video src="${item.src}"></video>` : `<img src="${item.src}">`;  
+                  
+                card.innerHTML = `  
+                    <div class="like-tag" onclick="likeMedia(${item.id}, event)">❤️ ${item.likes}</div>  
+                    ${mediaTag}  
+                    <div class="card-overlay">  
+                        <span class="card-title">${item.title}</span>  
+                        <span style="font-size:9px; opacity:0.7;">By ${item.owner}</span>  
+                        ${isAdmin ? `<button onclick="deleteMedia(${item.id}, event)" style="background:red; color:white; border:none; font-size:9px; padding:2px; margin-top:5px; border-radius:4px;">Delete</button>` : ''}  
+                    </div>  
+                `;  
+                card.onclick = () => alert(`Viewing: ${item.title}`);  
+                grid.appendChild(card);  
+            });  
+            section.appendChild(grid);  
+            container.appendChild(section);  
+        }  
+    }  
+  
+    /* CORE ACTIONS */  
+    function updateStats() {  
+        document.getElementById('statTotal').innerText = media.length;  
+        document.getElementById('statPhotos').innerText = media.filter(m => m.type === 'photo').length;  
+        document.getElementById('statVideos').innerText = media.filter(m => m.type === 'video').length;  
+        document.getElementById('reqBadge').innerText = requests.length;  
+    }  
+  
+    function filterGallery(type) {  
+        currentFilter = type;  
+        renderGallery();  
+    }  
+  
+    function likeMedia(id, e) {  
+        e.stopPropagation();  
+        const item = media.find(m => m.id === id);  
+        item.likes++;  
+        save();  
+        renderGallery();  
+    }  
+  
+    function deleteMedia(id, e) {  
+        e.stopPropagation();  
+        if(!confirm("Move to Recycle Bin?")) return;  
+        const idx = media.findIndex(m => m.id === id);  
+        recycleBin.push(media.splice(idx, 1)[0]);  
+        save();  
+        renderGallery();  
+        updateStats();  
+    }  
+  
+    function processUpload() {  
+        const fileInput = document.getElementById('fileInput');  
+        const title = document.getElementById('mediaTitle').value;  
+        const type = document.getElementById('mediaType').value;  
+          
+        if(!fileInput.files[0] || !title) return alert("Fill all fields");  
+  
+        const reader = new FileReader();  
+        reader.onload = function(e) {  
+            media.unshift({  
+                id: Date.now(),  
+                title: title,  
+                type: type,  
+                src: e.target.result,  
+                owner: currentUser,  
+                likes: 0,  
+                date: new Date().toISOString().split('T')[0]  
+            });  
+            save();  
+            showSection('gallery');  
+            renderGallery();  
+            updateStats();  
+        };  
+        reader.readAsDataURL(fileInput.files[0]);  
+    }  
+  
+    function requestAccess(item) {  
+        const msg = prompt(`Enter reason for requesting ${item}:`);  
+        if(msg) {  
+            requests.push({user: currentUser, msg: msg, type: item, id: Date.now()});  
+            save();  
+            alert("Request sent to Harshah!");  
+            updateStats();  
+        }  
+    }  
+  
+    /* UI HELPERS */  
+    function save() {  
+        localStorage.setItem("m_v3", JSON.stringify(media));  
+        localStorage.setItem("r_v3", JSON.stringify(recycleBin));  
+        localStorage.setItem("req_v3", JSON.stringify(requests));  
+    }  
+  
+    function showSection(id) {  
+        document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));  
+        document.getElementById('sec-' + id).classList.remove('hidden');  
+        if(window.innerWidth < 800) toggleSidebar();  
+    }  
+  
+    function checkAdmin(id) {  
+        if(isAdmin) showSection(id);  
+        else alert("Access Denied: Owner only.");  
+    }  
+  
+    function toggleSidebar() {  
+        document.getElementById('sidebar').classList.toggle('active');  
+        document.getElementById('sidebarBackdrop').classList.toggle('active');  
+    }  
+  
+    function toggleMusic() {  
+        const m = document.getElementById('bgMusic');  
+        m.paused ? m.play() : m.pause();  
+    }  
+  
+    function toggleTheme() { document.body.classList.toggle('light-theme'); }  
+    function logout() { location.reload(); }  
+    function toggleChat() { alert("Chat system connecting to Harshah..."); }  
+</script>  </body>  
+</html>   
